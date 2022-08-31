@@ -1,0 +1,64 @@
+@startuml nbd
+left to right direction
+title NBD - DynamicHD communication
+skinparam TitleFontSize 30
+
+
+file new_file
+file old_file
+folder my_nbd
+
+new_file --> [my_nbd]
+old_file <-- [my_nbd]
+
+rectangle Server-Side {
+    
+    cloud sub-thread {
+        note top of [NBD Driver]: listening..
+        [my_nbd] <..> [NBD Driver]
+        
+        queue pipe
+        [NBD Driver] <--> pipe 
+    }
+}
+
+rectangle Client-Side {
+
+    rectangle Framework {
+
+        component InputMediator {
+
+            
+                [Input Proxy] -- [Reactor] : ReadOP
+                
+                pipe --> [Reactor] : wake Reactor
+                
+                note top of [Reactor]: listening..
+        }
+        
+    }
+
+    note top of [NBD Proxy] : translator NBD'ish <> DeviceRequest
+    [NBD Proxy] -- [Input Proxy] : ReadOP
+    [NBD Proxy] <-- pipe : NBD'ish request - (W.1) read buff
+
+    rectangle Framework{
+
+        [NBD Proxy] --> InputMediator : (W/R.2) send DeviceRequest
+
+        component DynamicHD {
+
+            database HD
+
+            InputMediator --> HD : (W.3) DeviceWrite
+            InputMediator <-- HD : (R.3) DeviceRead
+
+            [NBD Proxy] ..> pipe : (R.1) success msg (R.4) output, (W.4) success msg
+            
+        
+        }
+    }
+    
+}
+
+@enduml

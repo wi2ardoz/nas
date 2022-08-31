@@ -1,0 +1,6 @@
+/dev/nbd6
+/home/liad/git/projects/nas/dll
+/home/liad/git/projects/nas/minions/m1 128
+/home/liad/git/projects/nas/minions/m2 64
+/home/liad/git/projects/nas/minions/m3 128
+/home/liad/git/projects/nas/minions/m4 256

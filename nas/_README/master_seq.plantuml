@@ -1,0 +1,46 @@
+@startuml Master Sequence
+
+Participant MASTER
+Participant Framework
+Participant Logger
+Participant Socket
+Participant Reactor
+Participant InputProxy
+Participant InputMediator
+Participant ThreadPool
+
+Participant Factory
+Participant Register
+Participant DirMonitor
+Participant CMD_SO
+
+MASTER->Framework:Creation of Framework
+Note right of MASTER: gives specification\n of InputProxy
+Framework->InputMediator:Instatiation and Init of InputMediator
+Framework->Factory:Instatiation and Init of Factory (s)
+Framework->DirMonitor:Instatiation and Init of DirMonitor 
+Framework->ThreadPool:Instatiation and Init of ThreadPool
+Framework->Logger:Instatiation and Init of Logger (s)
+InputMediator->Reactor:Instatiation of Reactor
+InputMediator->InputProxy:Points on specification\n of InputProxy
+InputMediator->Reactor:Registers Socket and InputProxy
+
+InputMediator->Reactor:Runs Reactor
+
+Note over CMD_SO,DirMonitor:Asynchomously Start
+Note over DirMonitor:AWAKES
+DirMonitor->CMD_SO:Async load
+CMD_SO-->Factory:Teaching new CMD
+Note over CMD_SO,DirMonitor:Asynchomously End
+
+Reactor->Socket:Listening
+Note over Reactor:AWAKES
+InputProxy->Socket:Read NBDish
+Socket-->InputProxy:Raw Data
+InputProxy->InputMediator:CMD(Translated)
+InputMediator->Factory:Asks for Factorization
+Factory-->InputMediator:Recieve Factorized obj
+Note over InputMediator:Task abstraction
+InputMediator->ThreadPool:Send task
+
+@enduml

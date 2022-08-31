@@ -1,4 +1,4 @@
-# nas
+# NAS
 Network Attached Storage (NAS) for Linux distros
 
 ## Introduction

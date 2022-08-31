@@ -20,8 +20,7 @@ change max_sectors_kb:
 * change to 4 (KB) and save.
 
 ## Phase 1 - Master
+TBD
 
 ## Phase 2 - Minion
-
-
 TBD
